@@ -1,0 +1,289 @@
+{
+  "kind": "build_request",
+  "title": "Build trading signal website with real-time indicators and notifications",
+  "projectName": "Trading Signal Hub",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Display a table of 9 trading assets (EUR/USD OTC, GBP/USD OTC, USD/CAD OTC, AUD/USD OTC, EUR/JPY OTC, GBP/NZD OTC, Bitcoin OTC, Gold OTC, Asia Composite Index) with columns for Asset, Price, Signal, Expiry, and Trade History",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-3"
+        ],
+        "quotes": [
+          "EUR/USD OTC",
+          "GBP/USD OTC",
+          "USD/CAD OTC",
+          "AUD/USD OTC",
+          "EUR/JPY OTC",
+          "GBP/NZD OTC",
+          "Bitcoin OTC",
+          "Gold OTC",
+          "Asia Composite Index"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Table displays all 9 assets with proper column headers",
+        "Each row shows asset name, current price, signal status, expiry time, and last 3 trades",
+        "Table is responsive and readable on mobile devices"
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Implement simulated price updates every 5 seconds with random price movements (±1% of current price) for all assets, with initial prices: EUR/USD OTC=1.08, GBP/USD OTC=1.27, USD/CAD OTC=1.35, AUD/USD OTC=0.66, EUR/JPY OTC=163, GBP/NZD OTC=2.05, Bitcoin OTC=30000, Gold OTC=1900, Asia Composite Index=3200",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-3"
+        ],
+        "quotes": [
+          "a.price += (Math.random()-0.5)*a.price*0.01",
+          "const UPDATE_MS = 5000"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Prices update every 5 seconds automatically",
+        "Price changes are within ±1% of current value",
+        "All initial prices match specified values",
+        "Prices display with 4 decimal places"
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Calculate EMA (Exponential Moving Average) for periods 21, 55, 100, and 200 using the formula: EMA = Price × k + EMA_prev × (1 - k) where k = 2/(period + 1), maintaining a price history array for each asset",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-3"
+        ],
+        "quotes": [
+          "function ema(d,p){ if(d.length<p) return null; let k=2/(p+1), e=d[0]; for(let x of d) e=x*k+e*(1-k); return e; }"
+        ]
+      },
+      "acceptanceCriteria": [
+        "EMA calculation uses the specified formula with k = 2/(period + 1)",
+        "Returns null if insufficient data points",
+        "Calculates EMA-21, EMA-55, EMA-100, and EMA-200 for each asset"
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Calculate RSI (Relative Strength Index) with a 14-period lookback using gains and losses over the period, returning values between 0-100",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-3"
+        ],
+        "quotes": [
+          "function rsi(d,p=14){ if(d.length<p+1) return null; let g=0,l=0; for(let i=d.length-p;i<d.length-1;i++){ let c=d[i+1]-d[i]; c>0?g+=c:l-=c; } if(l===0) return 100; return 100-(100/(1+(g/l))); }"
+        ]
+      },
+      "acceptanceCriteria": [
+        "RSI calculated with 14-period default",
+        "Returns null if insufficient data",
+        "Returns 100 if no losses detected",
+        "RSI value is between 0 and 100"
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "text": "Generate ADX (Average Directional Index) values randomly between 20 and 55 for each update cycle",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-3"
+        ],
+        "quotes": [
+          "function adx(){ return 20 + Math.random()*35; }"
+        ]
+      },
+      "acceptanceCriteria": [
+        "ADX returns random values between 20 and 55",
+        "ADX is calculated on each update cycle"
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "text": "Generate BUY signal when EMA-21 > EMA-55 > EMA-100 > EMA-200, RSI > 55, ADX ≥ 30, and current price is higher than previous price (bullish trend), then set random expiry of either 10 or 15 minutes",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-3"
+        ],
+        "quotes": [
+          "if(e21>e55&&e55>e100&&e100>e200&&r>55&&bullish(a.prices))",
+          "a.expiry = EXPIRY_OPTIONS[Math.floor(Math.random()*2)]",
+          "const EXPIRY_OPTIONS = [10, 15]"
+        ]
+      },
+      "acceptanceCriteria": [
+        "BUY signal triggered only when all conditions are met: EMA alignment, RSI > 55, ADX ≥ 30, bullish price action",
+        "Expiry randomly set to 10 or 15 minutes",
+        "Signal prevents new signals until expiry countdown completes"
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "text": "Generate SELL signal when EMA-21 < EMA-55 < EMA-100 < EMA-200, RSI < 45, ADX ≥ 30, and current price is lower than previous price (bearish trend), then set random expiry of either 10 or 15 minutes",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-3"
+        ],
+        "quotes": [
+          "else if(e21<e55&&e55<e100&&e100<e200&&r<45&&bearish(a.prices))",
+          "a.expiry = EXPIRY_OPTIONS[Math.floor(Math.random()*2)]"
+        ]
+      },
+      "acceptanceCriteria": [
+        "SELL signal triggered only when all conditions are met: inverse EMA alignment, RSI < 45, ADX ≥ 30, bearish price action",
+        "Expiry randomly set to 10 or 15 minutes",
+        "Signal prevents new signals until expiry countdown completes"
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "text": "Display HOLD status when no BUY or SELL conditions are met, or when a signal has expired after its countdown reaches zero",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-3"
+        ],
+        "quotes": [
+          "signal:\"HOLD\"",
+          "if(a.expiry<=0){ a.expiry=0; a.signal=\"HOLD\"; }"
+        ]
+      },
+      "acceptanceCriteria": [
+        "HOLD displayed by default when no signal conditions met",
+        "Signal automatically returns to HOLD after expiry countdown completes",
+        "HOLD status shown in orange color"
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "text": "Implement expiry countdown that decrements by 5 minutes (the timeframe interval) on each update cycle, displaying remaining time in minutes, and resetting signal to HOLD when countdown reaches zero",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-3"
+        ],
+        "quotes": [
+          "if(a.expiry>0){ a.expiry -= TIMEFRAME_MIN; if(a.expiry<=0){ a.expiry=0; a.signal=\"HOLD\"; } }"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Expiry decrements by 5 minutes each update cycle",
+        "Displays remaining minutes (10m, 5m, etc.)",
+        "Shows dash (-) when no active signal",
+        "Resets to HOLD when reaching zero"
+      ]
+    },
+    {
+      "id": "REQ-10",
+      "text": "Maintain trade history showing the last 3 signals for each asset, displaying signal type and expiry time (e.g., 'BUY (10m)', 'SELL (15m)'), with newest entries at the top",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-3"
+        ],
+        "quotes": [
+          "a.history.unshift(`BUY (${a.expiry}m)`)",
+          "a.history.unshift(`SELL (${a.expiry}m)`)",
+          "a.history = a.history.slice(0,3)"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Trade history limited to last 3 entries per asset",
+        "New signals prepended to history",
+        "Displays signal type and original expiry time",
+        "Shows dash (-) when no history available"
+      ]
+    },
+    {
+      "id": "REQ-11",
+      "text": "Send browser notifications when BUY or SELL signals are generated, showing asset name, signal type, and expiry minutes in the notification body, after requesting user permission",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-3"
+        ],
+        "quotes": [
+          "if (\"Notification\" in window) { Notification.requestPermission(); }",
+          "new Notification(\"Trade Signal\", { body: `${asset}\\n${signal} • ${expiry} min` })"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Request notification permission on page load",
+        "Send notification for each new BUY or SELL signal",
+        "Notification displays asset name, signal type, and expiry time",
+        "Notifications only sent if user granted permission"
+      ]
+    },
+    {
+      "id": "REQ-12",
+      "text": "Apply dark theme with background color #0f1115, white text, and signal-specific colors: bright green (#00ff99) for BUY signals, bright red (#ff4d4d) for SELL signals, and orange (#ffaa00) for HOLD status",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-3"
+        ],
+        "quotes": [
+          "body { background:#0f1115; color:#fff; }",
+          ".buy { color:#00ff99; font-weight:bold; }",
+          ".sell { color:#ff4d4d; font-weight:bold; }",
+          ".hold { color:#ffaa00; }"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Dark background (#0f1115) applied to page",
+        "BUY signals display in bright green (#00ff99) with bold weight",
+        "SELL signals display in bright red (#ff4d4d) with bold weight",
+        "HOLD status displays in orange (#ffaa00)"
+      ]
+    },
+    {
+      "id": "REQ-13",
+      "text": "Display page header with title '📊 Trading Signal Website (5m)' and subtitle showing 'EMA 21-55-100-200 • RSI • ADX' and 'Expiry: 10 / 15 Minutes' in smaller gray text",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-3"
+        ],
+        "quotes": [
+          "<h1>📊 Trading Signal Website (5m)</h1>",
+          "<p class=\"small\">EMA 21-55-100-200 • RSI • ADX<br>Expiry: 10 / 15 Minutes</p>"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Header displays chart emoji and title with '(5m)' timeframe indicator",
+        "Subtitle shows indicator list and expiry options",
+        "Subtitle styled in smaller gray text (#aaa)"
+      ]
+    }
+  ],
+  "constraints": [
+    "All calculations must run client-side in the frontend",
+    "Price simulation must use exactly ±1% random movement",
+    "EMA calculation must use the formula k = 2/(period + 1)",
+    "Signal generation must check all conditions before triggering",
+    "Expiry countdown must decrement by exactly 5 minutes per cycle",
+    "Trade history must be limited to exactly 3 entries per asset"
+  ],
+  "nonGoals": [
+    "Real market data integration or external API calls",
+    "User authentication or personalized settings",
+    "Historical data persistence across page reloads",
+    "Backend storage of signals or trade history",
+    "Advanced charting or technical analysis visualizations",
+    "Multi-timeframe support beyond 5-minute intervals",
+    "Real ADX calculation (uses simulated values)",
+    "Signal backtesting or performance analytics"
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}

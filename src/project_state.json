@@ -1,0 +1,153 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 3,
+  "summary": "Trading signal website that displays real-time buy/sell signals for forex, crypto, and commodities using EMA (21/55/100/200), RSI, and ADX indicators on 5-minute timeframe with 10/15 minute expiry options",
+  "architectural_notes": [
+    "Client-side only web application with no backend",
+    "Simulated price data using random walk algorithm",
+    "5-second update interval for price and signal calculations",
+    "EMA crossover strategy: e21>e55>e100>e200 for BUY, reverse for SELL",
+    "Signal conditions: ADX ≥ 30, RSI > 55 for BUY, RSI < 45 for SELL",
+    "Assets tracked: 6 forex pairs (EUR/USD, GBP/USD, USD/CAD, AUD/USD, EUR/JPY, GBP/NZD), Bitcoin, Gold, Asia Composite Index",
+    "Trade history limited to last 3 signals per asset",
+    "Random expiry selection between 10 and 15 minutes"
+  ],
+  "known_issues": [],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-display-a-table-of-9-trading-assets-eur-usd-otc-gbp-usd-otc-usd-cad-otc-aud-usd-otc-eur-jpy-otc-gbp-nzd-otc-bitcoin-otc-gold-otc-asia-composite-index-with-columns-for-asset-price-signal-expiry-and-trade-history",
+      "title": "Display a table of 9 trading assets (EUR/USD OTC, GBP/USD OTC, USD/CAD OTC, AUD/USD OTC, EUR/JPY OTC, GBP/NZD OTC, Bitcoin OTC, Gold OTC, Asia Composite Index) with columns for Asset, Price, Signal, Expiry, and Trade History",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-simulated-price-updates-every-5-seconds-with-random-price-movements-1-of-current-price-for-all-assets-with-initial-prices-eur-usd-otc-1-08-gbp-usd-otc-1-27-usd-cad-otc-1-35-aud-usd-otc-0-66-eur-jpy-otc-163-gbp-nzd-otc-2-05-bitcoin-otc-30000-gold-otc-1900-asia-composite-index-3200",
+      "title": "Implement simulated price updates every 5 seconds with random price movements (±1% of current price) for all assets, with initial prices: EUR/USD OTC=1.08, GBP/USD OTC=1.27, USD/CAD OTC=1.35, AUD/USD OTC=0.66, EUR/JPY OTC=163, GBP/NZD OTC=2.05, Bitcoin OTC=30000, Gold OTC=1900, Asia Composite Index=3200",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-calculate-ema-exponential-moving-average-for-periods-21-55-100-and-200-using-the-formula-ema-price-k-ema-prev-1-k-where-k-2-period-1-maintaining-a-price-history-array-for-each-asset",
+      "title": "Calculate EMA (Exponential Moving Average) for periods 21, 55, 100, and 200 using the formula: EMA = Price × k + EMA_prev × (1 - k) where k = 2/(period + 1), maintaining a price history array for each asset",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-calculate-rsi-relative-strength-index-with-a-14-period-lookback-using-gains-and-losses-over-the-period-returning-values-between-0-100",
+      "title": "Calculate RSI (Relative Strength Index) with a 14-period lookback using gains and losses over the period, returning values between 0-100",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-generate-adx-average-directional-index-values-randomly-between-20-and-55-for-each-update-cycle",
+      "title": "Generate ADX (Average Directional Index) values randomly between 20 and 55 for each update cycle",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-generate-buy-signal-when-ema-21-ema-55-ema-100-ema-200-rsi-55-adx-30-and-current-price-is-higher-than-previous-price-bullish-trend-then-set-random-expiry-of-either-10-or-15-minutes",
+      "title": "Generate BUY signal when EMA-21 > EMA-55 > EMA-100 > EMA-200, RSI > 55, ADX ≥ 30, and current price is higher than previous price (bullish trend), then set random expiry of either 10 or 15 minutes",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-generate-sell-signal-when-ema-21-ema-55-ema-100-ema-200-rsi-45-adx-30-and-current-price-is-lower-than-previous-price-bearish-trend-then-set-random-expiry-of-either-10-or-15-minutes",
+      "title": "Generate SELL signal when EMA-21 < EMA-55 < EMA-100 < EMA-200, RSI < 45, ADX ≥ 30, and current price is lower than previous price (bearish trend), then set random expiry of either 10 or 15 minutes",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-display-hold-status-when-no-buy-or-sell-conditions-are-met-or-when-a-signal-has-expired-after-its-countdown-reaches-zero",
+      "title": "Display HOLD status when no BUY or SELL conditions are met, or when a signal has expired after its countdown reaches zero",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-expiry-countdown-that-decrements-by-5-minutes-the-timeframe-interval-on-each-update-cycle-displaying-remaining-time-in-minutes-and-resetting-signal-to-hold-when-countdown-reaches-zero",
+      "title": "Implement expiry countdown that decrements by 5 minutes (the timeframe interval) on each update cycle, displaying remaining time in minutes, and resetting signal to HOLD when countdown reaches zero",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-maintain-trade-history-showing-the-last-3-signals-for-each-asset-displaying-signal-type-and-expiry-time-e-g-buy-10m-sell-15m-with-newest-entries-at-the-top",
+      "title": "Maintain trade history showing the last 3 signals for each asset, displaying signal type and expiry time (e.g., 'BUY (10m)', 'SELL (15m)'), with newest entries at the top",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-send-browser-notifications-when-buy-or-sell-signals-are-generated-showing-asset-name-signal-type-and-expiry-minutes-in-the-notification-body-after-requesting-user-permission",
+      "title": "Send browser notifications when BUY or SELL signals are generated, showing asset name, signal type, and expiry minutes in the notification body, after requesting user permission",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-apply-dark-theme-with-background-color-0f1115-white-text-and-signal-specific-colors-bright-green-00ff99-for-buy-signals-bright-red-ff4d4d-for-sell-signals-and-orange-ffaa00-for-hold-status",
+      "title": "Apply dark theme with background color #0f1115, white text, and signal-specific colors: bright green (#00ff99) for BUY signals, bright red (#ff4d4d) for SELL signals, and orange (#ffaa00) for HOLD status",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-display-page-header-with-title-trading-signal-website-5m-and-subtitle-showing-ema-21-55-100-200-rsi-adx-and-expiry-10-15-minutes-in-smaller-gray-text",
+      "title": "Display page header with title '📊 Trading Signal Website (5m)' and subtitle showing 'EMA 21-55-100-200 • RSI • ADX' and 'Expiry: 10 / 15 Minutes' in smaller gray text",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Display trading signals for multiple assets with EMA, RSI, ADX indicators",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Show price updates, signal type (BUY/SELL/HOLD), expiry countdown, and trade history",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Browser notifications for new trading signals",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-4",
+      "summary": "Dark theme UI with color-coded signals (green=buy, red=sell, orange=hold)",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "Trading Signal Website",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

@@ -1,0 +1,244 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-display-a-table-of-9-trading-assets-eur-usd-otc-gbp-usd-otc-usd-cad-otc-aud-usd-otc-eur-jpy-otc-gbp-nzd-otc-bitcoin-otc-gold-otc-asia-composite-index-with-columns-for-asset-price-signal-expiry-and-trade-history",
+      "featureTitle": "Display a table of 9 trading assets (EUR/USD OTC, GBP/USD OTC, USD/CAD OTC, AUD/USD OTC, EUR/JPY OTC, GBP/NZD OTC, Bitcoin OTC, Gold OTC, Asia Composite Index) with columns for Asset, Price, Signal, Expiry, and Trade History",
+      "files": [
+        "frontend/src/components/TradingTable.tsx",
+        "frontend/src/types/trading.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-1"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-simulated-price-updates-every-5-seconds-with-random-price-movements-1-of-current-price-for-all-assets-with-initial-prices-eur-usd-otc-1-08-gbp-usd-otc-1-27-usd-cad-otc-1-35-aud-usd-otc-0-66-eur-jpy-otc-163-gbp-nzd-otc-2-05-bitcoin-otc-30000-gold-otc-1900-asia-composite-index-3200",
+      "featureTitle": "Implement simulated price updates every 5 seconds with random price movements (±1% of current price) for all assets, with initial prices: EUR/USD OTC=1.08, GBP/USD OTC=1.27, USD/CAD OTC=1.35, AUD/USD OTC=0.66, EUR/JPY OTC=163, GBP/NZD OTC=2.05, Bitcoin OTC=30000, Gold OTC=1900, Asia Composite Index=3200",
+      "files": [
+        "frontend/src/hooks/usePriceSimulation.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-2"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-calculate-ema-exponential-moving-average-for-periods-21-55-100-and-200-using-the-formula-ema-price-k-ema-prev-1-k-where-k-2-period-1-maintaining-a-price-history-array-for-each-asset",
+      "featureTitle": "Calculate EMA (Exponential Moving Average) for periods 21, 55, 100, and 200 using the formula: EMA = Price × k + EMA_prev × (1 - k) where k = 2/(period + 1), maintaining a price history array for each asset",
+      "files": [
+        "frontend/src/utils/indicators.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-3"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-calculate-rsi-relative-strength-index-with-a-14-period-lookback-using-gains-and-losses-over-the-period-returning-values-between-0-100",
+      "featureTitle": "Calculate RSI (Relative Strength Index) with a 14-period lookback using gains and losses over the period, returning values between 0-100",
+      "files": [
+        "frontend/src/utils/indicators.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-4"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-generate-adx-average-directional-index-values-randomly-between-20-and-55-for-each-update-cycle",
+      "featureTitle": "Generate ADX (Average Directional Index) values randomly between 20 and 55 for each update cycle",
+      "files": [
+        "frontend/src/utils/indicators.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-5"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-generate-buy-signal-when-ema-21-ema-55-ema-100-ema-200-rsi-55-adx-30-and-current-price-is-higher-than-previous-price-bullish-trend-then-set-random-expiry-of-either-10-or-15-minutes",
+      "featureTitle": "Generate BUY signal when EMA-21 > EMA-55 > EMA-100 > EMA-200, RSI > 55, ADX ≥ 30, and current price is higher than previous price (bullish trend), then set random expiry of either 10 or 15 minutes",
+      "files": [
+        "frontend/src/utils/signalGenerator.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-6"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-generate-sell-signal-when-ema-21-ema-55-ema-100-ema-200-rsi-45-adx-30-and-current-price-is-lower-than-previous-price-bearish-trend-then-set-random-expiry-of-either-10-or-15-minutes",
+      "featureTitle": "Generate SELL signal when EMA-21 < EMA-55 < EMA-100 < EMA-200, RSI < 45, ADX ≥ 30, and current price is lower than previous price (bearish trend), then set random expiry of either 10 or 15 minutes",
+      "files": [
+        "frontend/src/utils/signalGenerator.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-7"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-display-hold-status-when-no-buy-or-sell-conditions-are-met-or-when-a-signal-has-expired-after-its-countdown-reaches-zero",
+      "featureTitle": "Display HOLD status when no BUY or SELL conditions are met, or when a signal has expired after its countdown reaches zero",
+      "files": [
+        "frontend/src/utils/signalGenerator.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-8"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-implement-expiry-countdown-that-decrements-by-5-minutes-the-timeframe-interval-on-each-update-cycle-displaying-remaining-time-in-minutes-and-resetting-signal-to-hold-when-countdown-reaches-zero",
+      "featureTitle": "Implement expiry countdown that decrements by 5 minutes (the timeframe interval) on each update cycle, displaying remaining time in minutes, and resetting signal to HOLD when countdown reaches zero",
+      "files": [
+        "frontend/src/hooks/usePriceSimulation.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-9"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-maintain-trade-history-showing-the-last-3-signals-for-each-asset-displaying-signal-type-and-expiry-time-e-g-buy-10m-sell-15m-with-newest-entries-at-the-top",
+      "featureTitle": "Maintain trade history showing the last 3 signals for each asset, displaying signal type and expiry time (e.g., 'BUY (10m)', 'SELL (15m)'), with newest entries at the top",
+      "files": [
+        "frontend/src/hooks/usePriceSimulation.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-10"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-send-browser-notifications-when-buy-or-sell-signals-are-generated-showing-asset-name-signal-type-and-expiry-minutes-in-the-notification-body-after-requesting-user-permission",
+      "featureTitle": "Send browser notifications when BUY or SELL signals are generated, showing asset name, signal type, and expiry minutes in the notification body, after requesting user permission",
+      "files": [
+        "frontend/src/hooks/useNotifications.ts",
+        "frontend/src/hooks/usePriceSimulation.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-11"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-apply-dark-theme-with-background-color-0f1115-white-text-and-signal-specific-colors-bright-green-00ff99-for-buy-signals-bright-red-ff4d4d-for-sell-signals-and-orange-ffaa00-for-hold-status",
+      "featureTitle": "Apply dark theme with background color #0f1115, white text, and signal-specific colors: bright green (#00ff99) for BUY signals, bright red (#ff4d4d) for SELL signals, and orange (#ffaa00) for HOLD status",
+      "files": [
+        "frontend/src/components/TradingTable.tsx",
+        "frontend/src/index.css"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-12"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-display-page-header-with-title-trading-signal-website-5m-and-subtitle-showing-ema-21-55-100-200-rsi-adx-and-expiry-10-15-minutes-in-smaller-gray-text",
+      "featureTitle": "Display page header with title '📊 Trading Signal Website (5m)' and subtitle showing 'EMA 21-55-100-200 • RSI • ADX' and 'Expiry: 10 / 15 Minutes' in smaller gray text",
+      "files": [
+        "frontend/src/App.tsx",
+        "frontend/src/components/TradingHeader.tsx",
+        "frontend/src/index.css"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-13"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

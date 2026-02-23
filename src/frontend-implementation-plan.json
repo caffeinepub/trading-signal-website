@@ -1,0 +1,245 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Trading Signal Hub - Frontend Implementation",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "summary": "Create trading assets table displaying 9 assets with columns for Asset, Price, Signal, Expiry, and Trade History",
+      "acceptanceCriteria": [
+        "Table displays all 9 assets with proper column headers",
+        "Each row shows asset name, current price, signal status, expiry time, and last 3 trades",
+        "Table is responsive and readable on mobile devices"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/TradingTable.tsx",
+          "operation": "create",
+          "description": "Create table component displaying 9 trading assets (EUR/USD OTC, GBP/USD OTC, USD/CAD OTC, AUD/USD OTC, EUR/JPY OTC, GBP/NZD OTC, Bitcoin OTC, Gold OTC, Asia Composite Index) with columns for Asset, Price, Signal, Expiry, and Trade History. Use shadcn/ui Table components for structure. Ensure responsive design for mobile devices."
+        },
+        {
+          "path": "frontend/src/types/trading.ts",
+          "operation": "create",
+          "description": "Define TypeScript interfaces for Asset data structure including name, price, signal, expiry, prices array (for technical indicators), and history array (for last 3 trades)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Implement simulated price updates every 5 seconds with ±1% random movements and specified initial prices",
+      "acceptanceCriteria": [
+        "Prices update every 5 seconds automatically",
+        "Price changes are within ±1% of current value",
+        "All initial prices match specified values",
+        "Prices display with 4 decimal places"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/usePriceSimulation.ts",
+          "operation": "create",
+          "description": "Create custom hook implementing price simulation logic that updates every 5 seconds (5000ms). Initialize assets with specified prices: EUR/USD OTC=1.08, GBP/USD OTC=1.27, USD/CAD OTC=1.35, AUD/USD OTC=0.66, EUR/JPY OTC=163, GBP/NZD OTC=2.05, Bitcoin OTC=30000, Gold OTC=1900, Asia Composite Index=3200. Apply random price movement of ±1% using formula: price += (Math.random()-0.5)*price*0.01. Maintain price history array for each asset. Format prices to 4 decimal places."
+        }
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "summary": "Calculate EMA (Exponential Moving Average) for periods 21, 55, 100, and 200 using specified formula",
+      "acceptanceCriteria": [
+        "EMA calculation uses the specified formula with k = 2/(period + 1)",
+        "Returns null if insufficient data points",
+        "Calculates EMA-21, EMA-55, EMA-100, and EMA-200 for each asset"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/utils/indicators.ts",
+          "operation": "create",
+          "description": "Create indicator calculation utilities. Implement EMA function using formula: EMA = Price × k + EMA_prev × (1 - k) where k = 2/(period + 1). Function accepts price data array and period parameter, returns null if insufficient data points (array length < period). Calculate EMA-21, EMA-55, EMA-100, and EMA-200 for signal generation."
+        }
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "summary": "Calculate RSI (Relative Strength Index) with 14-period lookback returning values 0-100",
+      "acceptanceCriteria": [
+        "RSI calculated with 14-period default",
+        "Returns null if insufficient data",
+        "Returns 100 if no losses detected",
+        "RSI value is between 0 and 100"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/utils/indicators.ts",
+          "operation": "modify",
+          "description": "Add RSI calculation function with 14-period default. Calculate gains and losses over the period, return null if insufficient data (array length < period + 1), return 100 if no losses detected (l === 0). Use formula: 100 - (100 / (1 + (gains / losses))). Ensure return value is between 0 and 100."
+        }
+      ]
+    },
+    {
+      "id": "REQ-5",
+      "summary": "Generate ADX (Average Directional Index) values randomly between 20 and 55",
+      "acceptanceCriteria": [
+        "ADX returns random values between 20 and 55",
+        "ADX is calculated on each update cycle"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/utils/indicators.ts",
+          "operation": "modify",
+          "description": "Add ADX function that returns random values between 20 and 55 using formula: 20 + Math.random() * 35. This simulated ADX will be called on each update cycle."
+        }
+      ]
+    },
+    {
+      "id": "REQ-6",
+      "summary": "Generate BUY signal when EMA alignment is bullish, RSI > 55, ADX ≥ 30, and price is rising, with random 10 or 15 minute expiry",
+      "acceptanceCriteria": [
+        "BUY signal triggered only when all conditions are met: EMA alignment, RSI > 55, ADX ≥ 30, bullish price action",
+        "Expiry randomly set to 10 or 15 minutes",
+        "Signal prevents new signals until expiry countdown completes"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/utils/signalGenerator.ts",
+          "operation": "create",
+          "description": "Create signal generation logic. Implement BUY signal condition: EMA-21 > EMA-55 > EMA-100 > EMA-200 AND RSI > 55 AND ADX ≥ 30 AND current price > previous price (bullish trend). When triggered, set signal to 'BUY' and randomly assign expiry to either 10 or 15 minutes. Prevent new signals while expiry countdown is active (expiry > 0). Add bullish trend helper checking if current price exceeds previous price."
+        }
+      ]
+    },
+    {
+      "id": "REQ-7",
+      "summary": "Generate SELL signal when EMA alignment is bearish, RSI < 45, ADX ≥ 30, and price is falling, with random 10 or 15 minute expiry",
+      "acceptanceCriteria": [
+        "SELL signal triggered only when all conditions are met: inverse EMA alignment, RSI < 45, ADX ≥ 30, bearish price action",
+        "Expiry randomly set to 10 or 15 minutes",
+        "Signal prevents new signals until expiry countdown completes"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/utils/signalGenerator.ts",
+          "operation": "modify",
+          "description": "Add SELL signal condition: EMA-21 < EMA-55 < EMA-100 < EMA-200 AND RSI < 45 AND ADX ≥ 30 AND current price < previous price (bearish trend). When triggered, set signal to 'SELL' and randomly assign expiry to either 10 or 15 minutes. Prevent new signals while expiry countdown is active. Add bearish trend helper checking if current price is below previous price."
+        }
+      ]
+    },
+    {
+      "id": "REQ-8",
+      "summary": "Display HOLD status when no signal conditions are met or signal has expired",
+      "acceptanceCriteria": [
+        "HOLD displayed by default when no signal conditions met",
+        "Signal automatically returns to HOLD after expiry countdown completes",
+        "HOLD status shown in orange color"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/utils/signalGenerator.ts",
+          "operation": "modify",
+          "description": "Set default signal status to 'HOLD' when no BUY or SELL conditions are met. Automatically reset signal to 'HOLD' when expiry countdown reaches zero. HOLD will be styled in orange color (#ffaa00) in the table component."
+        }
+      ]
+    },
+    {
+      "id": "REQ-9",
+      "summary": "Implement expiry countdown that decrements by 5 minutes per cycle and resets signal to HOLD at zero",
+      "acceptanceCriteria": [
+        "Expiry decrements by 5 minutes each update cycle",
+        "Displays remaining minutes (10m, 5m, etc.)",
+        "Shows dash (-) when no active signal",
+        "Resets to HOLD when reaching zero"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/usePriceSimulation.ts",
+          "operation": "modify",
+          "description": "Add expiry countdown logic that decrements by 5 minutes (TIMEFRAME_MIN = 5) on each update cycle. Check if expiry > 0, then subtract 5. If expiry reaches or falls below zero, set expiry to 0 and reset signal to 'HOLD'. Display remaining minutes with 'm' suffix in table, or dash (-) when expiry is 0."
+        }
+      ]
+    },
+    {
+      "id": "REQ-10",
+      "summary": "Maintain trade history showing last 3 signals per asset with signal type and expiry time",
+      "acceptanceCriteria": [
+        "Trade history limited to last 3 entries per asset",
+        "New signals prepended to history",
+        "Displays signal type and original expiry time",
+        "Shows dash (-) when no history available"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/usePriceSimulation.ts",
+          "operation": "modify",
+          "description": "When BUY or SELL signal is generated, prepend entry to history array in format 'BUY (10m)' or 'SELL (15m)' using the original expiry minutes. Limit history to last 3 entries using slice(0, 3). Display dash (-) in table when history is empty."
+        }
+      ]
+    },
+    {
+      "id": "REQ-11",
+      "summary": "Send browser notifications for BUY or SELL signals with asset name, signal type, and expiry minutes",
+      "acceptanceCriteria": [
+        "Request notification permission on page load",
+        "Send notification for each new BUY or SELL signal",
+        "Notification displays asset name, signal type, and expiry time",
+        "Notifications only sent if user granted permission"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/hooks/useNotifications.ts",
+          "operation": "create",
+          "description": "Create notification hook that requests browser notification permission on mount. Implement sendSignalNotification function that creates new Notification with title 'Trade Signal' and body containing asset name, signal type (BUY/SELL), and expiry minutes in format: 'AssetName\\nSIGNAL • expiry min'. Only send notifications if permission is 'granted'."
+        },
+        {
+          "path": "frontend/src/hooks/usePriceSimulation.ts",
+          "operation": "modify",
+          "description": "Integrate notification sending when BUY or SELL signals are generated. Call sendSignalNotification with asset name, signal type, and expiry minutes. Ensure notifications are only triggered for new signals, not on initial load or HOLD status."
+        }
+      ]
+    },
+    {
+      "id": "REQ-12",
+      "summary": "Apply dark theme with background #0f1115, white text, and signal-specific colors",
+      "acceptanceCriteria": [
+        "Dark background (#0f1115) applied to page",
+        "BUY signals display in bright green (#00ff99) with bold weight",
+        "SELL signals display in bright red (#ff4d4d) with bold weight",
+        "HOLD status displays in orange (#ffaa00)"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Add dark theme styling with background color #0f1115 and white text color. Define signal-specific color classes: .buy with color #00ff99 and font-weight bold, .sell with color #ff4d4d and font-weight bold, .hold with color #ffaa00."
+        },
+        {
+          "path": "frontend/src/components/TradingTable.tsx",
+          "operation": "modify",
+          "description": "Apply signal-specific CSS classes to signal column cells based on signal value: 'buy' class for BUY, 'sell' class for SELL, 'hold' class for HOLD."
+        }
+      ]
+    },
+    {
+      "id": "REQ-13",
+      "summary": "Display page header with title, timeframe indicator, and subtitle showing indicators and expiry options",
+      "acceptanceCriteria": [
+        "Header displays chart emoji and title with '(5m)' timeframe indicator",
+        "Subtitle shows indicator list and expiry options",
+        "Subtitle styled in smaller gray text (#aaa)"
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/TradingHeader.tsx",
+          "operation": "create",
+          "description": "Create header component displaying title '📊 Trading Signal Website (5m)' in h1 tag. Add subtitle paragraph with class 'small' showing 'EMA 21-55-100-200 • RSI • ADX' on first line and 'Expiry: 10 / 15 Minutes' on second line (using <br> tag). Style subtitle with smaller font size and gray color (#aaa)."
+        },
+        {
+          "path": "frontend/src/index.css",
+          "operation": "modify",
+          "description": "Add styling for .small class with smaller font size (e.g., 0.875rem) and gray color (#aaa) for header subtitle text."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "Import and render TradingHeader component at the top. Import usePriceSimulation hook and useNotifications hook. Pass simulated asset data from usePriceSimulation to TradingTable component. Ensure notification hook is initialized to request permission on mount. Structure the app with header followed by the trading table in a centered container."
+        }
+      ]
+    }
+  ]
+}

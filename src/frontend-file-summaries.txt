@@ -1,0 +1,12 @@
+{
+  "frontend/src/App.tsx": "Main application component that initializes notifications, manages price simulation state, and renders the trading header and table.",
+  "frontend/src/types/trading.ts": "TypeScript type definitions for Asset interface and AssetMap type used throughout the trading application.",
+  "frontend/src/utils/indicators.ts": "Technical indicator calculation utilities including EMA, RSI, ADX, and trend detection functions (bullish/bearish).",
+  "frontend/src/utils/signalGenerator.ts": "Signal generation logic that evaluates EMA alignment, RSI, ADX conditions to produce BUY/SELL/HOLD signals with expiry countdown.",
+  "frontend/src/hooks/useNotifications.ts": "Custom hook that requests browser notification permission on mount and provides function to send trading signal notifications.",
+  "frontend/src/hooks/usePriceSimulation.ts": "Custom hook that simulates price updates every 5 seconds with ±1% random movements, generates signals, and manages asset state.",
+  "frontend/src/components/TradingHeader.tsx": "Header component displaying the trading signal website title, timeframe indicator, and technical indicator information.",
+  "frontend/src/components/TradingTable.tsx": "Table component that displays all 9 trading assets with columns for asset name, price, signal, expiry, and trade history using shadcn/ui Table.",
+  "frontend/src/index.css": "Global styles with OKLCH color system including custom trading-specific color tokens for dark theme, signals, and UI elements.",
+  "frontend/tailwind.config.js": "Tailwind configuration extended with custom trading color palette tokens for dark background, borders, and signal colors (buy/sell/hold)."
+}

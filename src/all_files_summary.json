@@ -1,0 +1,21 @@
+{
+  "backend/main.mo": "Empty Motoko actor serving as a placeholder backend with no implemented functionality.",
+  "feature_evidence.json": "Feature evidence report documenting implemented trading features including asset table display, price simulation, EMA/RSI/ADX calculations, signal generation, notifications, and trade history with associated files and test IDs.",
+  "frontend-file-summaries.txt": "JSON-formatted summaries of all frontend source files describing their roles in the trading application.",
+  "frontend/index.css": "Tailwind CSS configuration with custom OKLCH color system defining light and dark theme variables for trading UI including background, borders, and signal colors.",
+  "frontend/index.html": "HTML entry point that loads the React application with title 'Trading Signal Website' and mounts to root div.",
+  "frontend/src/App.tsx": "Root React component that initializes notifications, runs price simulation hook, and renders the trading header and table in a dark-themed layout.",
+  "frontend/src/components/TradingHeader.tsx": "Header component displaying the trading website title with 5-minute timeframe and technical indicators (EMA, RSI, ADX) with expiry information.",
+  "frontend/src/components/TradingTable.tsx": "Table component rendering all trading assets with columns for asset name, price, signal (color-coded BUY/SELL/HOLD), expiry countdown, and trade history using shadcn/ui Table.",
+  "frontend/src/hooks/useActor.ts": "Custom hook managing ICP backend actor creation with Internet Identity authentication, handling anonymous and authenticated actors with query invalidation on identity changes.",
+  "frontend/src/hooks/useInternetIdentity.ts": "React context provider and hook for Internet Identity authentication, managing login state, identity storage, and AuthClient lifecycle with configurable options.",
+  "frontend/src/hooks/useNotifications.ts": "Custom hook requesting browser notification permission on mount and providing function to send trading signal notifications with asset, signal type, and expiry.",
+  "frontend/src/hooks/usePriceSimulation.ts": "Custom hook simulating price updates every 5 seconds with ±1% random movements, generating trading signals, managing expiry countdowns, and triggering notifications for new signals.",
+  "frontend/src/index.css": "Tailwind CSS configuration with custom CSS variables for light/dark themes, including trading-specific colors (buy/sell/hold signals, borders, backgrounds) using OKLCH color space.",
+  "frontend/src/main.tsx": "Application entry point that sets up React Query and Internet Identity providers, then renders the App component into the root DOM element.",
+  "frontend/src/types/trading.ts": "TypeScript type definitions for Asset (name, price, prices array, signal, expiry, history) and AssetMap (record of assets by name).",
+  "frontend/src/utils/indicators.ts": "Technical indicator calculations including EMA (exponential moving average), RSI (relative strength index), ADX (random 20-55), and bullish/bearish trend detection functions.",
+  "frontend/src/utils/signalGenerator.ts": "Generates BUY/SELL/HOLD trading signals based on EMA crossovers (21/55/100/200), RSI thresholds (>55 for BUY, <45 for SELL), ADX ≥30, and price trends with 10 or 15 minute expiry.",
+  "frontend/tailwind.config.js": "Tailwind configuration extending default theme with custom colors (using OKLCH CSS variables), border radius, shadows, and animations for accordion components and trading UI elements.",
+  "project_state.json": "Project metadata documenting a client-side trading signal website with 9 assets (forex, crypto, commodities), 5-second updates, EMA/RSI/ADX indicators, and 10/15 minute signal expiry."
+}
